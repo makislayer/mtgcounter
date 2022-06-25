@@ -5,6 +5,8 @@ import 'CoreLibs/sprites'
 import 'CoreLibs/crank'
 import 'CoreLibs/timer'
 
+import 'player'
+
 
 -- ! timers and other aux variables
 
@@ -14,14 +16,37 @@ local halfDisplayWidth = displayWidth / 2
 
 -- ! game states
 
+local numberOfPlayers = 2
+
 -- ! set up sprites
 
+local player1Sprite = Player()
+local player2Sprite = Player()
+local player3Sprite = Player()
+local player4Sprite = Player()
+
+local players = {player1Sprite, player2Sprite, player3Sprite, player4Sprite}
+
 -- ! aux functions
+
+function setPlayersLife(numberOfPlayers)
+	if numberOfPlayers > 2 then 
+
+	end
+end
+
+function setPlayersfLayout(numberOfPlayers)
+	if numberOfPlayers > 2 then 
+
+	end
+end
 
 -- ! game flow functions
 
 function setup()
 	playdate.ui.crankIndicator:start()
+	setPlayersLife(numberOfPlayers)
+	setPlayersfLayout(numberOfPlayers)	
 end
 
 -- ! game initialization
@@ -35,6 +60,7 @@ setup()
 function playdate.update()
 --	if(playdate.isCrankDocked()) then playdate.ui.crankIndicator:update() end
 end
+
 -- ! Button Functions
 
 local player = 0

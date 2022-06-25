@@ -1,0 +1,7 @@
+name=MTG Life Counter
+author=Makislayer
+description=A life counter for Magic the Gathering
+bundleID=com.makislayer.mtgcounter
+version=1.0
+buildNumber=100
+imagePath=SystemAssets

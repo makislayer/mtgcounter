@@ -8,6 +8,7 @@ function Player:init()
 	Player.super.init(self)
 	self.lifeFont = gfx.font.new('fonts/Roobert-24-Medium-Numerals');
 	self.life = 20
+	self.name = "Player"
 	self:setCenter(1,0)
 	self:setZIndex(900)
 	self:setIgnoresDrawOffset(true)
@@ -16,6 +17,16 @@ end
 
 function Player:setLife(newNumber)
 	self.life = newNumber
+
+	gfx.setFont(self.lifeFont)
+	local width = gfx.getTextSize(self.life)
+	self:setSize(width, 30)
+	--self:moveTo(screenWidth - 40, 200)
+	self:markDirty()
+end
+
+function Player:setName(newName)
+	self.name = newNumber
 
 	gfx.setFont(self.lifeFont)
 	local width = gfx.getTextSize(self.life)

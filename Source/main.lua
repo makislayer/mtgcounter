@@ -55,6 +55,11 @@ function setup()
 	setPlayersLife(numberOfPlayers)
 	setPlayersLayout(numberOfPlayers)
 	setPlayersNames()
+
+	for i = 1,numberOfPlayers do
+		players[i]:moveTo(i*halfDisplayWidth/2,120)
+	end
+		
 end
 
 -- ! game initialization
@@ -67,6 +72,7 @@ setup()
 
 function playdate.update()
 --	if(playdate.isCrankDocked()) then playdate.ui.crankIndicator:update() end
+	gfx.sprite.update()
 end
 
 -- ! Button Functions
@@ -97,7 +103,7 @@ function playdate.downButtonUp()end
 function playdate.AButtonDown()		
 	print(players[activePlayer].life)
 end
-function playdate.AButtonUp()		print("AU")	end
+function playdate.AButtonUp()	end
 function playdate.BButtonDown()		print("BD")	end
 function playdate.BButtonUp()		print("BU")	end
 function playdate.cranked(change, acceleratedChange)		print(change)	end

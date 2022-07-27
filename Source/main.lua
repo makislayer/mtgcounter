@@ -6,6 +6,7 @@ import 'CoreLibs/crank'
 import 'CoreLibs/timer'
 
 import 'player'
+import 'background'
 
 
 -- ! timers and other aux variables
@@ -27,6 +28,8 @@ local player3Sprite = Player()
 local player4Sprite = Player()
 
 local players = {player1Sprite, player2Sprite, player3Sprite, player4Sprite}
+
+local backgroundSprite = Background()
 
 -- ! aux functions
 
@@ -59,6 +62,8 @@ function setup()
 	for i = 1,numberOfPlayers do
 		players[i]:moveTo(i*halfDisplayWidth/2,120)
 	end
+	backgroundSprite:setBackgroundSize(numberOfPlayers)
+	backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0)
 		
 end
 
@@ -78,13 +83,17 @@ end
 -- ! Button Functions
 
 function playdate.leftButtonDown()	
-	if activePlayer > 1 then activePlayer -= 1 end
-	print (activePlayer)
+	if activePlayer > 1 then 
+		activePlayer -= 1
+		backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0) 
+	end
 end
 function playdate.leftButtonUp()	end
 function playdate.rightButtonDown()
-	if activePlayer < numberOfPlayers then activePlayer += 1 end
-	print (activePlayer)	
+	if activePlayer < numberOfPlayers then 
+		activePlayer += 1
+		backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0) 
+	end	
 end
 function playdate.rightButtonUp()	end
 

@@ -45,7 +45,7 @@ function setPlayersLayout(numberOfPlayers)
 	if numberOfPlayers > 2 then 
 	else 
 		for i = 1,numberOfPlayers do
-			players[i]:moveTo(i*halfDisplayWidth-quarterDisplayWidth,halfDisplayHeight)
+			players[i]:moveTo(i*halfDisplayWidth-(quarterDisplayWidth/2),halfDisplayHeight)
 		end
 		backgroundSprite:setBackgroundSize(numberOfPlayers)
 		backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0)
@@ -58,13 +58,22 @@ function setPlayersNames()
 	end
 end
 
+function updatePlayersColours()
+	backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0)
+	for i = 1,numberOfPlayers do
+		players[i]:setInactive()
+	end
+	players[activePlayer]:setActive()
+end
+
 -- ! game flow functions
 
 function setup()
 	playdate.ui.crankIndicator:start()
 	setPlayersLife(numberOfPlayers)
 	setPlayersLayout(numberOfPlayers)
-	setPlayersNames()		
+	setPlayersNames()
+	players[activePlayer]:setActive()	
 end
 
 -- ! game initialization
@@ -85,14 +94,14 @@ end
 function playdate.leftButtonDown()	
 	if activePlayer > 1 then 
 		activePlayer -= 1
-		backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0) 
+		updatePlayersColours()
 	end
 end
 function playdate.leftButtonUp()	end
 function playdate.rightButtonDown()
 	if activePlayer < numberOfPlayers then 
 		activePlayer += 1
-		backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0) 
+		updatePlayersColours()
 	end	
 end
 function playdate.rightButtonUp()	end

@@ -20,8 +20,7 @@ function Player:setLife(newNumber)
 
 	gfx.setFont(self.lifeFont)
 	local width = gfx.getTextSize(self.life)
-	self:setSize(width, 30)
-	--self:moveTo(screenWidth - 40, 200)
+	self:setSize(width, 36)
 	self:markDirty()
 end
 
@@ -30,9 +29,12 @@ function Player:setName(newName)
 
 	gfx.setFont(self.lifeFont)
 	local width = gfx.getTextSize(self.life)
-	self:setSize(width, 30)
-	--self:moveTo(screenWidth - 40, 200)
+	self:setSize(width, 36)
 	self:markDirty()
+end
+
+function Player:setActive(newName)
+
 end
 
 -- draw callback from the sprite library

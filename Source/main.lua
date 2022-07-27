@@ -14,6 +14,8 @@ import 'background'
 local gfx = playdate.graphics
 local displayWidth, displayHeight = playdate.display.getSize()
 local halfDisplayWidth = displayWidth / 2
+local quarterDisplayWidth = displayWidth / 4
+local halfDisplayHeight = displayHeight / 2
 
 -- ! game states
 
@@ -41,7 +43,12 @@ end
 
 function setPlayersLayout(numberOfPlayers)
 	if numberOfPlayers > 2 then 
-
+	else 
+		for i = 1,numberOfPlayers do
+			players[i]:moveTo(i*halfDisplayWidth-quarterDisplayWidth,halfDisplayHeight)
+		end
+		backgroundSprite:setBackgroundSize(numberOfPlayers)
+		backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0)
 	end
 end
 
@@ -57,14 +64,7 @@ function setup()
 	playdate.ui.crankIndicator:start()
 	setPlayersLife(numberOfPlayers)
 	setPlayersLayout(numberOfPlayers)
-	setPlayersNames()
-
-	for i = 1,numberOfPlayers do
-		players[i]:moveTo(i*halfDisplayWidth/2,120)
-	end
-	backgroundSprite:setBackgroundSize(numberOfPlayers)
-	backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0)
-		
+	setPlayersNames()		
 end
 
 -- ! game initialization

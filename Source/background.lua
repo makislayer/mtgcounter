@@ -16,6 +16,7 @@ function Background:init()
 	self:setZIndex(0)
 	self:setIgnoresDrawOffset(true)
     self:setSize(self.width, self.height)
+    self:setCenter(0,0)
 	self:add()
 end
 

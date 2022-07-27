@@ -1,12 +1,15 @@
 local screenWidth = playdate.display.getWidth()
 local gfx = playdate.graphics
 
+local font = gfx.font.new('fonts/Flak Attack Big');
+local invertedFont = gfx.font.new('fonts/Flak Attack Big Inverted');
+
 class('Player').extends(playdate.graphics.sprite)
 
 function Player:init()
 
 	Player.super.init(self)
-	self.lifeFont = gfx.font.new('fonts/Roobert-24-Medium-Numerals');
+	self.lifeFont = font
 	self.life = 20
 	self.name = "Player"
 	self:setCenter(1,0)
@@ -20,7 +23,7 @@ function Player:setLife(newNumber)
 
 	gfx.setFont(self.lifeFont)
 	local width = gfx.getTextSize(self.life)
-	self:setSize(width, 36)
+	self:setSize(width, 100)
 	self:markDirty()
 end
 
@@ -29,12 +32,18 @@ function Player:setName(newName)
 
 	gfx.setFont(self.lifeFont)
 	local width = gfx.getTextSize(self.life)
-	self:setSize(width, 36)
+	self:setSize(width, 100)
 	self:markDirty()
 end
 
-function Player:setActive(newName)
+function Player:setActive()
+	self.lifeFont = invertedFont
+	self:markDirty()
+end
 
+function Player:setInactive()
+	self.lifeFont = font
+	self:markDirty()
 end
 
 -- draw callback from the sprite library

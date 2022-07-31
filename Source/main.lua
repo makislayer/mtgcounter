@@ -45,7 +45,8 @@ function setPlayersLayout(numberOfPlayers)
 	if numberOfPlayers > 2 then 
 	else 
 		for i = 1,numberOfPlayers do
-			players[i]:moveTo(i*halfDisplayWidth-(quarterDisplayWidth/2),halfDisplayHeight)
+			players[i]:add()
+			players[i]:moveTo(i*halfDisplayWidth-quarterDisplayWidth,halfDisplayHeight)
 		end
 		backgroundSprite:setBackgroundSize(numberOfPlayers)
 		backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0)
@@ -124,4 +125,10 @@ end
 function playdate.AButtonUp()	end
 function playdate.BButtonDown()		print("BD")	end
 function playdate.BButtonUp()		print("BU")	end
-function playdate.cranked(change, acceleratedChange)		print(change)	end
+function playdate.cranked(change, acceleratedChange)
+	revolution = playdate.getCrankTicks(1)
+	if revolution~=0 then
+		life = players[activePlayer].life + revolution
+		players[activePlayer]:setLife(life)
+	end
+end

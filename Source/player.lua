@@ -1,8 +1,8 @@
 local screenWidth = playdate.display.getWidth()
 local gfx = playdate.graphics
 
-local font = gfx.font.new('fonts/Flak Attack Big');
-local invertedFont = gfx.font.new('fonts/Flak Attack Big Inverted');
+local font = gfx.font.new('fonts/Flak Attack Huge');
+local invertedFont = gfx.font.new('fonts/Flak Attack Huge Inverted');
 
 class('Player').extends(playdate.graphics.sprite)
 
@@ -12,10 +12,9 @@ function Player:init()
 	self.lifeFont = font
 	self.life = 20
 	self.name = "Player"
-	self:setCenter(1,0)
+	self:setCenter(0.5,0.5)
 	self:setZIndex(900)
 	self:setIgnoresDrawOffset(true)
-	self:add()
 end
 
 function Player:setLife(newNumber)
@@ -23,7 +22,7 @@ function Player:setLife(newNumber)
 
 	gfx.setFont(self.lifeFont)
 	local width = gfx.getTextSize(self.life)
-	self:setSize(width, 100)
+	self:setSize(width, 84)
 	self:markDirty()
 end
 
@@ -32,7 +31,7 @@ function Player:setName(newName)
 
 	gfx.setFont(self.lifeFont)
 	local width = gfx.getTextSize(self.life)
-	self:setSize(width, 100)
+	self:setSize(width, 84)
 	self:markDirty()
 end
 

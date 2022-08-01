@@ -40,12 +40,17 @@ local backgroundSprite = Background()
 -- ! aux functions
 
 function setPlayersLife(numberOfPlayers)
-	if numberOfPlayers > 2 then 
-		for i,p in ipairs(players) do p:setLife(40)	end
+	local life = 20
+	if numberOfPlayers > 2 then life = 40 end
+	for i,p in ipairs(players) do
+		p:setLife(life)
 	end
 end
 
 function setPlayersLayout(numberOfPlayers)
+	for i in ipairs(players) do 
+		players[i]:remove()	
+	end
 	players[1]:moveTo(leftPosition,halfDisplayHeight)
 	players[2]:moveTo(rightPostion,halfDisplayHeight)
 	players[3]:moveTo(leftPosition,halfDisplayHeight+quarterDisplayHeight)
@@ -141,3 +146,20 @@ function playdate.cranked(change, acceleratedChange)
 		players[activePlayer]:setLife(life)
 	end
 end
+
+-- ! Menu Functions
+
+local menu = playdate.getSystemMenu()
+
+menu:addMenuItem("Reset life", function()
+    setPlayersLife(numberOfPlayers)
+end)
+
+menu:addOptionsMenuItem("Players", {1,2,3,4}, numberOfPlayers, function(value)
+	numberOfPlayers = tonumber(value)
+	if(numberOfPlayers < activePlayer) then
+		activePlayer = numberOfPlayers
+	end
+    setPlayersLayout(numberOfPlayers)
+	updatePlayersColours()
+end)

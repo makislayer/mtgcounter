@@ -1,9 +1,9 @@
 local displayWidth, displayHeight = playdate.display.getSize()
-local gfx = playdate.graphics
+local gfx <const> = playdate.graphics
 
 local halfDisplayWidth = displayWidth / 2
 local cuarterDisplayWidth = displayWidth / 4
-local halfDisplayHeight = displayHeight /2
+local halfDisplayHeight = displayHeight / 2
 
 class('Background').extends(playdate.graphics.sprite)
 
@@ -16,17 +16,18 @@ function Background:init()
 	self:setZIndex(0)
 	self:setIgnoresDrawOffset(true)
     self:setSize(self.width, self.height)
-    self:setCenter(0,0)
+    self:setCenter(0.5,0.5)
 	self:add()
 end
 
 function Background:setBackgroundSize(numPlayers)
-    self.height = displayHeight
+    self.width = halfDisplayWidth
     if numPlayers > 2 then
-        self.width = cuarterDisplayWidth
+        self.height = halfDisplayHeight
     else 
-        self.width = halfDisplayWidth
+        self.height = displayHeight
     end
+    self:setSize(self.width, self.height)
     self:markDirty()
 end
 

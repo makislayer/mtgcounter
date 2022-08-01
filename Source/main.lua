@@ -11,11 +11,15 @@ import 'background'
 
 -- ! timers and other aux variables
 
-local gfx = playdate.graphics
+local gfx <const> = playdate.graphics
 local displayWidth, displayHeight = playdate.display.getSize()
 local halfDisplayWidth = displayWidth / 2
 local quarterDisplayWidth = displayWidth / 4
 local halfDisplayHeight = displayHeight / 2
+local quarterDisplayHeight = displayHeight / 4
+
+local leftPosition = halfDisplayWidth-quarterDisplayWidth
+local rightPostion = displayWidth-quarterDisplayWidth
 
 -- ! game states
 
@@ -42,15 +46,19 @@ function setPlayersLife(numberOfPlayers)
 end
 
 function setPlayersLayout(numberOfPlayers)
-	if numberOfPlayers > 2 then 
-	else 
-		for i = 1,numberOfPlayers do
-			players[i]:add()
-			players[i]:moveTo(i*halfDisplayWidth-quarterDisplayWidth,halfDisplayHeight)
-		end
-		backgroundSprite:setBackgroundSize(numberOfPlayers)
-		backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0)
+	players[1]:moveTo(leftPosition,halfDisplayHeight)
+	players[2]:moveTo(rightPostion,halfDisplayHeight)
+	players[3]:moveTo(leftPosition,halfDisplayHeight+quarterDisplayHeight)
+	players[4]:moveTo(rightPostion,halfDisplayHeight+quarterDisplayHeight)
+	if numberOfPlayers > 2 then
+		players[1]:moveTo(leftPosition,quarterDisplayHeight)
+		players[2]:moveTo(rightPostion,quarterDisplayHeight)
 	end
+	for i = 1,numberOfPlayers do
+		players[i]:add()
+	end
+	backgroundSprite:setBackgroundSize(numberOfPlayers)
+	backgroundSprite:moveTo(players[activePlayer]:getPosition())
 end
 
 function setPlayersNames() 
@@ -60,7 +68,7 @@ function setPlayersNames()
 end
 
 function updatePlayersColours()
-	backgroundSprite:moveTo((activePlayer-1)*halfDisplayWidth,0)
+	backgroundSprite:moveTo(players[activePlayer]:getPosition())
 	for i = 1,numberOfPlayers do
 		players[i]:setInactive()
 	end
@@ -88,6 +96,7 @@ setup()
 function playdate.update()
 --	if(playdate.isCrankDocked()) then playdate.ui.crankIndicator:update() end
 	gfx.sprite.update()
+	playdate.timer.updateTimers()
 end
 
 -- ! Button Functions

@@ -23,10 +23,16 @@ local rightPostion = displayWidth-quarterDisplayWidth
 
 -- ! game states
 
+local file = playdate.datastore.read()
 local numberOfPlayers = 2
 local activePlayer = 1
 local availableFonts = {"Flak Attack", "Gaiapolis", "Hot Chase"}
 local currentFont = availableFonts[3]
+
+if file~=nil then 
+	numberOfPlayers = file[1]
+	currentFont = file[2]
+end
 
 -- ! set up sprites
 
@@ -41,7 +47,7 @@ local backgroundSprite = Background()
 
 -- ! aux functions
 
-function setPlayersLife(numberOfPlayers)
+function setPlayersLife()
 	local life = 20
 	if numberOfPlayers > 2 then life = 40 end
 	for i,p in ipairs(players) do
@@ -49,7 +55,7 @@ function setPlayersLife(numberOfPlayers)
 	end
 end
 
-function setPlayersLayout(numberOfPlayers)
+function setPlayersLayout(newNumberOfPlayers)
 	for i in ipairs(players) do
 		players[i]:remove()
 	end
@@ -57,21 +63,16 @@ function setPlayersLayout(numberOfPlayers)
 	players[2]:moveTo(rightPostion,halfDisplayHeight)
 	players[3]:moveTo(leftPosition,halfDisplayHeight+quarterDisplayHeight)
 	players[4]:moveTo(rightPostion,halfDisplayHeight+quarterDisplayHeight)
-	if numberOfPlayers > 2 then
+	if newNumberOfPlayers > 2 then
 		players[1]:moveTo(leftPosition,quarterDisplayHeight)
 		players[2]:moveTo(rightPostion,quarterDisplayHeight)
 	end
-	for i = 1,numberOfPlayers do
+	for i = 1,newNumberOfPlayers do
 		players[i]:add()
 	end
-	backgroundSprite:setBackgroundSize(numberOfPlayers)
+	backgroundSprite:setBackgroundSize(newNumberOfPlayers)
 	backgroundSprite:moveTo(players[activePlayer]:getPosition())
-end
-
-function setPlayersNames()
-	for i in ipairs(players) do
-		players[i]:setName("Player " .. i)
-	end
+	numberOfPlayers=newNumberOfPlayers
 end
 
 function setPlayersFont(newFont)
@@ -90,13 +91,17 @@ function updatePlayersColours()
 	players[activePlayer]:setActive()
 end
 
+function saveConfiguration()
+	playdate.datastore.write({numberOfPlayers, currentFont})
+end
+
 -- ! game flow functions
 
 function setup()
 	playdate.ui.crankIndicator:start()
-	setPlayersLife(numberOfPlayers)
+	setPlayersLife()
 	setPlayersLayout(numberOfPlayers)
-	setPlayersNames()
+	setPlayersFont(currentFont)
 	players[activePlayer]:setActive()
 end
 
@@ -163,17 +168,20 @@ local menu = playdate.getSystemMenu()
 
 menu:addOptionsMenuItem("Font", availableFonts, currentFont, function(value)
 	setPlayersFont(value)
+	saveConfiguration()
 end)
 
 menu:addMenuItem("Reset life", function()
-    setPlayersLife(numberOfPlayers)
+    setPlayersLife()
 end)
 
 menu:addOptionsMenuItem("Players", {1,2,3,4}, numberOfPlayers, function(value)
-	numberOfPlayers = tonumber(value)
-	if(numberOfPlayers < activePlayer) then
-		activePlayer = numberOfPlayers
+	newNumberOfPlayers = tonumber(value)
+	print(newNumberOfPlayers)
+	if(newNumberOfPlayers < activePlayer) then
+		activePlayer = newNumberOfPlayers
 	end
-    setPlayersLayout(numberOfPlayers)
+    setPlayersLayout(newNumberOfPlayers)
 	updatePlayersColours()
+	saveConfiguration()
 end)

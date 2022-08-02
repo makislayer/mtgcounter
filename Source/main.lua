@@ -122,6 +122,7 @@ end
 -- ! game initialization
 
 playdate.display.setRefreshRate(15)
+playdate.setAutoLockDisabled(true)
 
 setup()
 

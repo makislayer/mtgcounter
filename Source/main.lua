@@ -60,7 +60,6 @@ function loadPlayersLife()
 		local lifes = file[3]
 		for i in ipairs(players) do
 			players[i]:setLife(lifes[i])
-			print (lifes[i])
 		end
 	else setPlayersLife()
 	end
@@ -164,11 +163,10 @@ end
 function playdate.downButtonUp()end
 
 function playdate.AButtonDown()
-	print(players[activePlayer].life)
 end
 function playdate.AButtonUp()	end
-function playdate.BButtonDown()		print("BD")	end
-function playdate.BButtonUp()		print("BU")	end
+function playdate.BButtonDown()			end
+function playdate.BButtonUp()			end
 function playdate.cranked(change, acceleratedChange)
 	revolution = playdate.getCrankTicks(1)
 	if revolution~=0 then
@@ -186,19 +184,18 @@ menu:addOptionsMenuItem("Font", availableFonts, currentFont, function(value)
 	saveConfiguration()
 end)
 
-menu:addMenuItem("Reset life", function()
-    setPlayersLife()
-end)
-
 menu:addOptionsMenuItem("Players", {1,2,3,4}, numberOfPlayers, function(value)
 	newNumberOfPlayers = tonumber(value)
-	print(newNumberOfPlayers)
 	if(newNumberOfPlayers < activePlayer) then
 		activePlayer = newNumberOfPlayers
 	end
     setPlayersLayout(newNumberOfPlayers)
 	updatePlayersColours()
 	saveConfiguration()
+end)
+
+menu:addMenuItem("Reset life", function()
+    setPlayersLife()
 end)
 
 -- ! System Functions

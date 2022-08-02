@@ -1,8 +1,8 @@
 local screenWidth = playdate.display.getWidth()
 local gfx <const> = playdate.graphics
 
-local font = gfx.font.new('fonts/Flak Attack Huge');
-local invertedFont = gfx.font.new('fonts/Flak Attack Huge Inverted');
+local font = gfx.font.new('fonts/Hot Chase Huge');
+local invertedFont = gfx.font.new('fonts/Hot Chase Huge Inverted');
 
 class('Player').extends(playdate.graphics.sprite)
 
@@ -33,6 +33,11 @@ function Player:setName(newName)
 	local width = gfx.getTextSize(self.life)
 	self:setSize(width, 82)
 	self:markDirty()
+end
+
+function Player:updateFont(newFont)
+	font = gfx.font.new('fonts/'..newFont..' Huge')
+	invertedFont = gfx.font.new('fonts/'..newFont..' Huge Inverted')
 end
 
 function Player:setActive()

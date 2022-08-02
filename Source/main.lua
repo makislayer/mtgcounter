@@ -25,6 +25,8 @@ local rightPostion = displayWidth-quarterDisplayWidth
 
 local numberOfPlayers = 2
 local activePlayer = 1
+local availableFonts = {"Flak Attack", "Gaiapolis", "Hot Chase"}
+local currentFont = availableFonts[3]
 
 -- ! set up sprites
 
@@ -48,8 +50,8 @@ function setPlayersLife(numberOfPlayers)
 end
 
 function setPlayersLayout(numberOfPlayers)
-	for i in ipairs(players) do 
-		players[i]:remove()	
+	for i in ipairs(players) do
+		players[i]:remove()
 	end
 	players[1]:moveTo(leftPosition,halfDisplayHeight)
 	players[2]:moveTo(rightPostion,halfDisplayHeight)
@@ -66,10 +68,18 @@ function setPlayersLayout(numberOfPlayers)
 	backgroundSprite:moveTo(players[activePlayer]:getPosition())
 end
 
-function setPlayersNames() 
-	for i in ipairs(players) do 
-		players[i]:setName("Player " .. i)	
+function setPlayersNames()
+	for i in ipairs(players) do
+		players[i]:setName("Player " .. i)
 	end
+end
+
+function setPlayersFont(newFont)
+	currentFont = newFont
+	for i in ipairs(players) do
+		players[i]:updateFont(currentFont)
+	end
+	updatePlayersColours()
 end
 
 function updatePlayersColours()
@@ -87,7 +97,7 @@ function setup()
 	setPlayersLife(numberOfPlayers)
 	setPlayersLayout(numberOfPlayers)
 	setPlayersNames()
-	players[activePlayer]:setActive()	
+	players[activePlayer]:setActive()
 end
 
 -- ! game initialization
@@ -106,18 +116,18 @@ end
 
 -- ! Button Functions
 
-function playdate.leftButtonDown()	
-	if activePlayer > 1 then 
+function playdate.leftButtonDown()
+	if activePlayer > 1 then
 		activePlayer -= 1
 		updatePlayersColours()
 	end
 end
 function playdate.leftButtonUp()	end
 function playdate.rightButtonDown()
-	if activePlayer < numberOfPlayers then 
+	if activePlayer < numberOfPlayers then
 		activePlayer += 1
 		updatePlayersColours()
-	end	
+	end
 end
 function playdate.rightButtonUp()	end
 
@@ -133,7 +143,7 @@ function playdate.downButtonDown()
 end
 function playdate.downButtonUp()end
 
-function playdate.AButtonDown()		
+function playdate.AButtonDown()
 	print(players[activePlayer].life)
 end
 function playdate.AButtonUp()	end
@@ -150,6 +160,10 @@ end
 -- ! Menu Functions
 
 local menu = playdate.getSystemMenu()
+
+menu:addOptionsMenuItem("Font", availableFonts, currentFont, function(value)
+	setPlayersFont(value)
+end)
 
 menu:addMenuItem("Reset life", function()
     setPlayersLife(numberOfPlayers)

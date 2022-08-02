@@ -55,6 +55,17 @@ function setPlayersLife()
 	end
 end
 
+function loadPlayersLife()
+	if file~=nil then
+		local lifes = file[3]
+		for i in ipairs(players) do
+			players[i]:setLife(lifes[i])
+			print (lifes[i])
+		end
+	else setPlayersLife()
+	end
+end
+
 function setPlayersLayout(newNumberOfPlayers)
 	for i in ipairs(players) do
 		players[i]:remove()
@@ -92,14 +103,18 @@ function updatePlayersColours()
 end
 
 function saveConfiguration()
-	playdate.datastore.write({numberOfPlayers, currentFont})
+	local lifes = {}
+	for i in ipairs(players) do
+		lifes[i]=players[i].life
+	end
+	playdate.datastore.write({numberOfPlayers, currentFont, lifes})
 end
 
 -- ! game flow functions
 
 function setup()
 	playdate.ui.crankIndicator:start()
-	setPlayersLife()
+	loadPlayersLife()
 	setPlayersLayout(numberOfPlayers)
 	setPlayersFont(currentFont)
 	players[activePlayer]:setActive()
@@ -185,3 +200,13 @@ menu:addOptionsMenuItem("Players", {1,2,3,4}, numberOfPlayers, function(value)
 	updatePlayersColours()
 	saveConfiguration()
 end)
+
+-- ! System Functions
+
+function playdate.gameWillTerminate()
+	saveConfiguration()
+end
+
+function playdate.deviceWillSleep()
+	saveConfiguration()
+end

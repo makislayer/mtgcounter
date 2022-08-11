@@ -94,6 +94,7 @@ function setPlayersFont(newFont)
 end
 
 function updatePlayersColours()
+	backgroundSprite.timer=0
 	backgroundSprite:moveTo(players[activePlayer]:getPosition())
 	for i = 1,numberOfPlayers do
 		players[i]:setInactive()
@@ -162,9 +163,7 @@ function playdate.downButtonDown()
 	players[activePlayer]:setLife(life)
 end
 function playdate.downButtonUp()end
-
-function playdate.AButtonDown()
-end
+function playdate.AButtonDown()	end
 function playdate.AButtonUp()	end
 function playdate.BButtonDown()			end
 function playdate.BButtonUp()			end

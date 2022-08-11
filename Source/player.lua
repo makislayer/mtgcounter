@@ -22,7 +22,7 @@ function Player:setLife(newNumber)
 
 	gfx.setFont(self.lifeFont)
 	local width = gfx.getTextSize(self.life)
-	self:setSize(width, 82)
+	self:setSize(width, 78)
 	self:markDirty()
 end
 
@@ -31,7 +31,7 @@ function Player:setName(newName)
 
 	gfx.setFont(self.lifeFont)
 	local width = gfx.getTextSize(self.life)
-	self:setSize(width, 82)
+	self:setSize(width, 78)
 	self:markDirty()
 end
 

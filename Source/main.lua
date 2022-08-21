@@ -206,10 +206,10 @@ function playdate.BButtonUp()			end
 function playdate.cranked(change, acceleratedChange)
 	revolution = playdate.getCrankTicks(1)
 	if revolution~=0 then
-		--if change > 3 or change < -3 then
+		if change > 4 or change < -4 then
 			life = players[activePlayer].life - revolution
 			players[activePlayer]:setLife(life)
-		--end
+		end
 	end
 end
 

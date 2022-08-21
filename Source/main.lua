@@ -7,7 +7,7 @@ import 'CoreLibs/timer'
 
 import 'player'
 import 'background'
-
+import 'history'
 
 -- ! timers and other aux variables
 
@@ -19,7 +19,9 @@ local halfDisplayHeight = displayHeight / 2
 local quarterDisplayHeight = displayHeight / 4
 
 local leftPosition = halfDisplayWidth-quarterDisplayWidth
-local rightPostion = displayWidth-quarterDisplayWidth
+local rightPosition = displayWidth-quarterDisplayWidth
+local leftHiddenPosition = - 80
+local rightHiddenPosition = displayWidth + 80
 
 -- ! game states
 
@@ -28,6 +30,7 @@ local numberOfPlayers = 2
 local activePlayer = 1
 local availableFonts = {"Flak Attack", "Gaiapolis", "Hot Chase"}
 local currentFont = availableFonts[3]
+local lifeHistoryActive = false
 
 if file~=nil then 
 	numberOfPlayers = file[1]
@@ -43,6 +46,13 @@ local player4Sprite = Player()
 
 local players = {player1Sprite, player2Sprite, player3Sprite, player4Sprite}
 
+local player1historySprite = History()
+local player2historySprite = History()
+local player3historySprite = History()
+local player4historySprite = History()
+
+local history = {player1historySprite, player2historySprite, player3historySprite, player4historySprite}
+
 local backgroundSprite = Background()
 
 -- ! aux functions
@@ -52,6 +62,7 @@ function setPlayersLife()
 	if numberOfPlayers > 2 then life = 40 end
 	for i,p in ipairs(players) do
 		p:setLife(life)
+		history[i]:resetLife(numberOfPlayers)
 	end
 end
 
@@ -60,6 +71,7 @@ function loadPlayersLife()
 		local lifes = file[3]
 		for i in ipairs(players) do
 			players[i]:setLife(lifes[i])
+			history[i]:resetLife(numberOfPlayers)
 		end
 	else setPlayersLife()
 	end
@@ -68,17 +80,25 @@ end
 function setPlayersLayout(newNumberOfPlayers)
 	for i in ipairs(players) do
 		players[i]:remove()
+		history[i]:remove()
 	end
 	players[1]:moveTo(leftPosition,halfDisplayHeight)
-	players[2]:moveTo(rightPostion,halfDisplayHeight)
+	players[2]:moveTo(rightPosition,halfDisplayHeight)
 	players[3]:moveTo(leftPosition,halfDisplayHeight+quarterDisplayHeight)
-	players[4]:moveTo(rightPostion,halfDisplayHeight+quarterDisplayHeight)
+	players[4]:moveTo(rightPosition,halfDisplayHeight+quarterDisplayHeight)
+	history[1]:moveTo(leftHiddenPosition,halfDisplayHeight)
+	history[2]:moveTo(rightHiddenPosition,halfDisplayHeight)
+	history[3]:moveTo(leftHiddenPosition,quarterDisplayHeight)
+	history[4]:moveTo(rightHiddenPosition,halfDisplayHeight+quarterDisplayHeight)
 	if newNumberOfPlayers > 2 then
 		players[1]:moveTo(leftPosition,quarterDisplayHeight)
-		players[2]:moveTo(rightPostion,quarterDisplayHeight)
+		players[2]:moveTo(rightPosition,quarterDisplayHeight)
+		history[1]:moveTo(leftHiddenPosition,quarterDisplayHeight)
+		history[2]:moveTo(rightHiddenPosition,quarterDisplayHeight)
 	end
 	for i = 1,newNumberOfPlayers do
 		players[i]:add()
+		history[i]:add()
 	end
 	backgroundSprite:setBackgroundSize(newNumberOfPlayers)
 	backgroundSprite:moveTo(players[activePlayer]:getPosition())
@@ -110,6 +130,17 @@ function saveConfiguration()
 	playdate.datastore.write({numberOfPlayers, currentFont, lifes})
 end
 
+function slideScreen(direction)
+	local slide = 180
+	if (not lifeHistoryActive and (direction == 2 or direction == 4)) or (lifeHistoryActive and (direction == 1 or direction == 3)) then slide = -slide end
+	backgroundSprite:moveBy(slide,0)
+	for i = 1, numberOfPlayers do
+		players[i]:moveBy(slide,0)
+		history[i]:moveBy(slide,0)
+	end
+	lifeHistoryActive = not lifeHistoryActive
+end
+
 -- ! game flow functions
 
 function setup()
@@ -117,7 +148,7 @@ function setup()
 	loadPlayersLife()
 	setPlayersLayout(numberOfPlayers)
 	setPlayersFont(currentFont)
-	players[activePlayer]:setActive()
+	players[activePlayer]:setActive()	
 end
 
 -- ! game initialization
@@ -138,14 +169,14 @@ end
 -- ! Button Functions
 
 function playdate.leftButtonDown()
-	if activePlayer > 1 then
+	if not lifeHistoryActive and activePlayer > 1 then
 		activePlayer -= 1
 		updatePlayersColours()
 	end
 end
 function playdate.leftButtonUp()	end
 function playdate.rightButtonDown()
-	if activePlayer < numberOfPlayers then
+	if not lifeHistoryActive and activePlayer < numberOfPlayers then
 		activePlayer += 1
 		updatePlayersColours()
 	end
@@ -163,15 +194,22 @@ function playdate.downButtonDown()
 	players[activePlayer]:setLife(life)
 end
 function playdate.downButtonUp()end
-function playdate.AButtonDown()	end
+function playdate.AButtonDown()
+	slideScreen(activePlayer)
+end
 function playdate.AButtonUp()	end
-function playdate.BButtonDown()			end
+function playdate.BButtonDown()
+	if lifeHistoryActive then slideScreen(activePlayer) end		
+	--history[1]:updateLife(players[1].life)
+end
 function playdate.BButtonUp()			end
 function playdate.cranked(change, acceleratedChange)
 	revolution = playdate.getCrankTicks(1)
 	if revolution~=0 then
-		life = players[activePlayer].life - revolution
-		players[activePlayer]:setLife(life)
+		--if change > 3 or change < -3 then
+			life = players[activePlayer].life - revolution
+			players[activePlayer]:setLife(life)
+		--end
 	end
 end
 

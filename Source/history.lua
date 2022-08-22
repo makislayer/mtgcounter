@@ -8,7 +8,7 @@ local font = gfx.font.new('fonts/Hot Chase');
 
 class('History').extends(playdate.graphics.sprite)
 
-function History:init()
+function History:init(lifeValue)
 
 	History.super.init(self)
 	self.lifeFont = font
@@ -22,35 +22,39 @@ function History:init()
 	self:setIgnoresDrawOffset(true)
 end
 
-function History:resetLife(numberOfPlayers)
+function History:resetLife(numberOfPlayers, startingValue)
+	if startingValue == 0 then
+		startingValue = "20"
+		if numberOfPlayers > 2 then startingValue = "40" end
+	end
 	self.elements = 1
 	for i = 1, self.maxElements do
 		self.life[i] = " "
 		self.dif[i] = " "
 	end
-	local life = "20"
-	if numberOfPlayers > 2 then life = "40" end
-	self.life[1] = life
+	self.life[1] = startingValue
 	self.dif[1] = "*"
 	self:markDirty()
 end
 
 function History:updateLife(newLife)
 	local diff = newLife - tonumber(self.life[self.elements])
-	local diffString = tostring(diff)
-	if diff > 0 then diffString = "+"..diff end
-	if self.elements <= self.maxElements then
-		self.elements += 1
-		self.life[self.elements] = tostring(newLife)
-		self.dif[self.elements] = diffString
-	else 
-		table.remove(self.life, 1)
-		table.remove(self.dif, 1)
-		table.insert(self.life, tostring(newLife))
-		table.insert(self.dif, diffString)
+	if diff ~= 0 then
+		local diffString = tostring(diff)
+		if diff > 0 then diffString = "+"..diff end
+		if self.elements <= self.maxElements then
+			self.elements += 1
+			self.life[self.elements] = tostring(newLife)
+			self.dif[self.elements] = diffString
+		else 
+			table.remove(self.life, 1)
+			table.remove(self.dif, 1)
+			table.insert(self.life, tostring(newLife))
+			table.insert(self.dif, diffString)
+		end
+		gfx.setFont(self.lifeFont)
+		self:markDirty()
 	end
-	gfx.setFont(self.lifeFont)
-	self:markDirty()
 end
 
 function History:setPlayers(numberOfPlayers)

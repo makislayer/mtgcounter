@@ -12,6 +12,13 @@ import 'history'
 -- ! timers and other aux variables
 
 local gfx <const> = playdate.graphics
+
+local timeToUpdateLife = 5 * 10000
+local timeToHide = 2 * 1000
+local lifeTimer = nil
+local keyTimer = nil
+local hideTimer = nil
+
 local displayWidth, displayHeight = playdate.display.getSize()
 local halfDisplayWidth = displayWidth / 2
 local quarterDisplayWidth = displayWidth / 4
@@ -62,7 +69,7 @@ function setPlayersLife()
 	if numberOfPlayers > 2 then life = 40 end
 	for i,p in ipairs(players) do
 		p:setLife(life)
-		history[i]:resetLife(numberOfPlayers)
+		history[i]:resetLife(numberOfPlayers, life)
 	end
 end
 
@@ -71,7 +78,7 @@ function loadPlayersLife()
 		local lifes = file[3]
 		for i in ipairs(players) do
 			players[i]:setLife(lifes[i])
-			history[i]:resetLife(numberOfPlayers)
+			history[i]:resetLife(numberOfPlayers, players[i].life)
 		end
 	else setPlayersLife()
 	end
@@ -141,6 +148,16 @@ function slideScreen(direction)
 	lifeHistoryActive = not lifeHistoryActive
 end
 
+function updateLifeHistory()
+	for i in ipairs(history) do
+		history[i]:updateLife(players[i].life)
+	end
+end
+
+function resetLifeTimer()
+	lifeTimer = playdate.timer.new(timeToUpdateLife, updateLifeHistory())
+end
+
 -- ! game flow functions
 
 function setup()
@@ -184,23 +201,33 @@ end
 function playdate.rightButtonUp()	end
 
 function playdate.upButtonDown()
-	life = players[activePlayer].life + 1
-	players[activePlayer]:setLife(life)
+	local function timerCallback()
+		life = players[activePlayer].life + 1
+		players[activePlayer]:setLife(life)
+		resetLifeTimer()
+	end
+	keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
 end
-function playdate.upButtonUp()end
+
+function playdate.upButtonUp() keyTimer:remove() end
 
 function playdate.downButtonDown()
-	life = players[activePlayer].life - 1
-	players[activePlayer]:setLife(life)
+	local function timerCallback()
+		life = players[activePlayer].life - 1
+		players[activePlayer]:setLife(life)
+		resetLifeTimer()
+	end
+	keyTimer = playdate.timer.keyRepeatTimer(timerCallback)
 end
-function playdate.downButtonUp()end
+
+function playdate.downButtonUp() keyTimer:remove() end
+
 function playdate.AButtonDown()
 	slideScreen(activePlayer)
 end
 function playdate.AButtonUp()	end
 function playdate.BButtonDown()
-	if lifeHistoryActive then slideScreen(activePlayer) end		
-	--history[1]:updateLife(players[1].life)
+	if lifeHistoryActive then slideScreen(activePlayer) end
 end
 function playdate.BButtonUp()			end
 function playdate.cranked(change, acceleratedChange)
@@ -209,6 +236,7 @@ function playdate.cranked(change, acceleratedChange)
 		if change > 4 or change < -4 then
 			life = players[activePlayer].life - revolution
 			players[activePlayer]:setLife(life)
+			resetLifeTimer()
 		end
 	end
 end

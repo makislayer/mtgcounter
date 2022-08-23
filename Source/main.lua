@@ -19,6 +19,8 @@ local lifeTimer = nil
 local keyTimer = nil
 local hideTimer = nil
 
+local multiplier = 1
+
 local displayWidth, displayHeight = playdate.display.getSize()
 local halfDisplayWidth = displayWidth / 2
 local quarterDisplayWidth = displayWidth / 4
@@ -225,7 +227,7 @@ function playdate.rightButtonUp() end
 
 function playdate.upButtonDown()
 	local function timerCallback()
-		life = players[activePlayer].life + 1
+		life = players[activePlayer].life + (multiplier * 1)
 		players[activePlayer]:setLife(life)
 		resetLifeTimer()
 	end
@@ -236,7 +238,7 @@ function playdate.upButtonUp() keyTimer:remove() end
 
 function playdate.downButtonDown()
 	local function timerCallback()
-		life = players[activePlayer].life - 1
+		life = players[activePlayer].life - (multiplier * 1)
 		players[activePlayer]:setLife(life)
 		resetLifeTimer()
 	end
@@ -251,13 +253,14 @@ end
 function playdate.AButtonUp()	end
 function playdate.BButtonDown()
 	if lifeHistoryActive then slideScreen(activePlayer) end
+	multiplier = 5
 end
-function playdate.BButtonUp()			end
+function playdate.BButtonUp() multiplier = 1 end
 function playdate.cranked(change, acceleratedChange)
 	revolution = playdate.getCrankTicks(1)
 	if revolution~=0 then
 		if change > 4 or change < -4 then
-			life = players[activePlayer].life - revolution
+			life = players[activePlayer].life - (multiplier * revolution)
 			players[activePlayer]:setLife(life)
 			resetLifeTimer()
 		end

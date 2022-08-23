@@ -13,7 +13,7 @@ import 'history'
 
 local gfx <const> = playdate.graphics
 
-local timeToUpdateLife = 5 * 10000
+local timeToUpdateLife = 5 * 1000
 local timeToHide = 2 * 1000
 local lifeTimer = nil
 local keyTimer = nil
@@ -155,7 +155,8 @@ function updateLifeHistory()
 end
 
 function resetLifeTimer()
-	lifeTimer = playdate.timer.new(timeToUpdateLife, updateLifeHistory())
+		if lifeTimer ~= nil then lifeTimer:remove() end
+	lifeTimer = playdate.timer.new(timeToUpdateLife, updateLifeHistory)
 end
 
 -- ! game flow functions
@@ -165,7 +166,7 @@ function setup()
 	loadPlayersLife()
 	setPlayersLayout(numberOfPlayers)
 	setPlayersFont(currentFont)
-	players[activePlayer]:setActive()	
+	players[activePlayer]:setActive()
 end
 
 -- ! game initialization

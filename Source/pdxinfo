@@ -3,5 +3,5 @@ author=Makislayer
 description=A life counter for Magic the Gathering
 bundleID=com.makislayer.mtgcounter
 version=1.2
-buildNumber=112211
+buildNumber=1122122
 imagePath=SystemAssets

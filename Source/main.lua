@@ -85,6 +85,7 @@ function loadPlayersLife()
 end
 
 function setPlayersLayout(newNumberOfPlayers)
+	if lifeHistoryActive then slideScreen(activePlayer) end
 	for i in ipairs(players) do
 		players[i]:remove()
 		history[i]:remove()
@@ -202,6 +203,9 @@ function playdate.leftButtonDown()
 		activePlayer -= 1
 		updatePlayersColours()
 	end
+	if lifeHistoryActive and (activePlayer == 2 or activePlayer == 4) then
+		slideScreen(activePlayer)
+	end
 	backgroundSprite:showArrows()
 	hideArrowsTimer()
 end
@@ -210,6 +214,9 @@ function playdate.rightButtonDown()
 	if not lifeHistoryActive and activePlayer < numberOfPlayers then
 		activePlayer += 1
 		updatePlayersColours()
+	end
+	if lifeHistoryActive and (activePlayer == 1 or activePlayer == 3) then
+		slideScreen(activePlayer)
 	end
 	backgroundSprite:showArrows()
 	hideArrowsTimer()

@@ -13,7 +13,7 @@ import 'history'
 
 local gfx <const> = playdate.graphics
 
-local timeToUpdateLife = 4 * 1000
+local timeToUpdateLife = 2 * 1000
 local timeToHide = 2 * 1000
 local lifeTimer = nil
 local keyTimer = nil
@@ -95,7 +95,7 @@ function setPlayersLayout(newNumberOfPlayers)
 	players[4]:moveTo(rightPosition,halfDisplayHeight+quarterDisplayHeight)
 	history[1]:moveTo(leftHiddenPosition,halfDisplayHeight)
 	history[2]:moveTo(rightHiddenPosition,halfDisplayHeight)
-	history[3]:moveTo(leftHiddenPosition,quarterDisplayHeight)
+	history[3]:moveTo(leftHiddenPosition,halfDisplayHeight+quarterDisplayHeight)
 	history[4]:moveTo(rightHiddenPosition,halfDisplayHeight+quarterDisplayHeight)
 	if newNumberOfPlayers > 2 then
 		players[1]:moveTo(leftPosition,quarterDisplayHeight)
@@ -105,6 +105,7 @@ function setPlayersLayout(newNumberOfPlayers)
 	end
 	for i = 1,newNumberOfPlayers do
 		players[i]:add()
+		history[i]:setPlayers(newNumberOfPlayers)
 		history[i]:add()
 	end
 	backgroundSprite:setBackgroundSize(newNumberOfPlayers)
@@ -138,7 +139,7 @@ function saveConfiguration()
 end
 
 function slideScreen(direction)
-	local slide = 180
+	local slide = 120
 	if (not lifeHistoryActive and (direction == 2 or direction == 4)) or (lifeHistoryActive and (direction == 1 or direction == 3)) then slide = -slide end
 	backgroundSprite:moveBy(slide,0)
 	for i = 1, numberOfPlayers do
@@ -173,9 +174,9 @@ end
 
 function setup()
 	playdate.ui.crankIndicator:start()
-	loadPlayersLife()
 	setPlayersLayout(numberOfPlayers)
 	setPlayersFont(currentFont)
+	loadPlayersLife()
 	players[activePlayer]:setActive()
 end
 
@@ -272,6 +273,7 @@ menu:addOptionsMenuItem("Players", {1,2,3,4}, numberOfPlayers, function(value)
 	end
     setPlayersLayout(newNumberOfPlayers)
 	updatePlayersColours()
+	setPlayersLife()
 	saveConfiguration()
 end)
 

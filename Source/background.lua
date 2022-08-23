@@ -18,7 +18,7 @@ function Background:init()
     self.y=0
     self.width=halfDisplayWidth
     self.height=displayHeight
-    self.timer=0
+    self.arrows=true
 	self:setZIndex(0)
 	self:setIgnoresDrawOffset(true)
     self:setSize(self.width, self.height)
@@ -45,16 +45,20 @@ end
 function Background:drawWithArrows(x, y, width, height)
     gfx.setColor(gfx.kColorBlack)
 	gfx.fillRect(x,y,width, height)
-    upArrowImage:draw(0,0)
-    downArrowImage:draw(0,self.height-16)
+    upArrowImage:draw(self.width / 2 - 21, 0)
+    downArrowImage:draw(self.width / 2 - 21, self.height-16)
+end
+
+function Background:showArrows()
+    self.arrows=true
+    self:markDirty()
 end
 
 -- draw callback from the sprite library
 function Background:draw(x, y, width, height)
-    if(self.timer<30) then self:drawWithArrows(x, y, width, height) else self:drawNormal(x, y, width, height) end
+    if self.arrows then self:drawWithArrows(x, y, width, height) else self:drawNormal(x, y, width, height) end
 end
 
 function Background:update()
-    self.timer+=1
-    if self.timer == 30 then self:markDirty() end
+    
 end

@@ -13,7 +13,7 @@ import 'history'
 
 local gfx <const> = playdate.graphics
 
-local timeToUpdateLife = 5 * 1000
+local timeToUpdateLife = 4 * 1000
 local timeToHide = 2 * 1000
 local lifeTimer = nil
 local keyTimer = nil
@@ -154,9 +154,19 @@ function updateLifeHistory()
 	end
 end
 
+function hideArrows()
+	backgroundSprite.arrows=false
+	backgroundSprite:markDirty()
+end
+
 function resetLifeTimer()
-		if lifeTimer ~= nil then lifeTimer:remove() end
+	if lifeTimer ~= nil then lifeTimer:remove() end
 	lifeTimer = playdate.timer.new(timeToUpdateLife, updateLifeHistory)
+end
+
+function hideArrowsTimer()
+	if hideTimer ~= nil then hideTimer:remove() end
+	hideTimer = playdate.timer.new(timeToHide, hideArrows)
 end
 
 -- ! game flow functions
@@ -191,15 +201,19 @@ function playdate.leftButtonDown()
 		activePlayer -= 1
 		updatePlayersColours()
 	end
+	backgroundSprite:showArrows()
+	hideArrowsTimer()
 end
-function playdate.leftButtonUp()	end
+function playdate.leftButtonUp() end
 function playdate.rightButtonDown()
 	if not lifeHistoryActive and activePlayer < numberOfPlayers then
 		activePlayer += 1
 		updatePlayersColours()
 	end
+	backgroundSprite:showArrows()
+	hideArrowsTimer()
 end
-function playdate.rightButtonUp()	end
+function playdate.rightButtonUp() end
 
 function playdate.upButtonDown()
 	local function timerCallback()

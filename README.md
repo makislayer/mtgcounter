@@ -2,7 +2,7 @@
 MTG Life Counter is a life tracker for Magic the Gathering trading card game that you can carry on your [Playdate!](https://play.date/)
 
 <p align="center">
-  <img src="https://img.itch.zone/aW1nLzk3NDAzNjUuanBn/315x250%23c/WyplVD.jpg">
+  <img src="https://img.itch.zone/aW1nLzk4NjQ2ODYuanBn/315x250%23c/9AAkW9.jpg">
 </p>
 
 ## Compile

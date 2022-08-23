@@ -28,7 +28,7 @@ function History:resetLife(numberOfPlayers, startingValue)
 		if numberOfPlayers > 2 then startingValue = "40" end
 	end
 	self.elements = 1
-	for i = 1, self.maxElements do
+	for i in ipairs(self.life) do
 		self.life[i] = " "
 		self.dif[i] = " "
 	end
